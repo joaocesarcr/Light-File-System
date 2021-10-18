@@ -1,26 +1,31 @@
 #include <stdio.h>
 #include <string.h>
 
-// Bit manipulation baseado em
-// https://stackoverflow.com/questions/2525310/how-to-define-and-work-with-an-array-of-bits-in-c
-
 int getCommand(char* str);
 
 int main() {
   int stop = 0;
   char input[80];
+  char *ptr;
   do {
     fgets(input,80, stdin);
-    switch(getCommand(input)) {
-      case 0:
-        printf("Unknown command\n");
-        break;
+    ptr = strtok(input," "); // Pega somente a primeira palavra digitada
 
+    /*
+    ptr = strtok(NULL," "); // 
+    printf("Segunda: %s\n",ptr);
+    */
+
+    switch(getCommand(ptr)) {
       case 1:
         stop = 1;
         break;
 
       case 2:
+        break;
+
+      default:
+        printf("Unknown command\n");
         break;
 
     }

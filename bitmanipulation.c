@@ -7,14 +7,13 @@ void bitManipulation() {
 int = 32bits/4bytes
 */
 
-// Metadata 4bytes
-  unsigned int metadata =  0;
+// Metadata 4bytes ???
+  unsigned int metadata = 0;
   // ○ Tamanho do índice (quantas entradas o índice possui, utilizar o valor 2^8)
-    //0010 ** 1000 ?
+    
 
   // ○ Tamanho do cluster (utilizar o valor 32KB)
-    // 0010 0000
-
+    // 0010 0000 
  
   // ○ Byte onde o índice inicia (metadados iniciam no byte zero e vão até byte 3)
     // byte 4 = 0000 0100
@@ -37,12 +36,16 @@ int = 32bits/4bytes
 // ○ vazio
 // ○ corrompido
 
-
   /*
     Os clusters são posicionados logo abaixo do índice e possuem 32KB de tamanho cada.
     A estrutura interna dos clusters é de livre escolha do grupo
     32KB = 256000bits = 8000ints cada cluster
     256 cluster totais
   */
-}
+  // dependerá do espaco que deixarmos para a arvore
+  unsigned int clusters[255][8000];
+  for (i = 0; i < 256; i++) {
+    for(int j = 0; j<8000; j++) 
+      clusters[i][j] = 0;
+  }
 

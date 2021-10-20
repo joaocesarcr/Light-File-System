@@ -6,25 +6,25 @@
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
 int getCommand(char* str);
-void clearScreen();
+void clearScreen(int a);
 void asciiArt();
 
 int main() {
-
-  clearScreen();
+  clearScreen(10);
   asciiArt();
+  clearScreen(25);
   int stop = 0;
   char input[80];
   char *ptr;
 
   do {
-    // substituir pelo diretorio atual
     printf(ANSI_COLOR_GREEN); //Set the text to the color red
+    // substituir pelo diretorio atual
     printf("/root $ ");
     printf(ANSI_COLOR_RESET); 
 
     fgets(input,80, stdin);
-    ptr = strtok(input," "); // Pega somente a primeira palavra digitada
+    ptr = strtok(input," "); // Separa o input a partir do " "
 
     /*
     ptr = strtok(NULL," "); // 
@@ -32,15 +32,48 @@ int main() {
     */
 
     switch(getCommand(ptr)) {
+      case 1:
+        // cd
+        break;
+
+      case 2:
+        // dir
+        break;
+
+      case 3:
+        // rm
+        break;
+
+      case 4:
+        //mkdir
+        break;
+
+      case 5:
+        //mkfile
+        break;
+
+      case 6:
+        //edit
+        break;
+
+      case 7:
+        //move
+        break;
+
+      case 8:
+        // rename
+        break;
+
       case 9:
-        clearScreen();
+        clearScreen(40);
         break;
 
       case 10:
         stop = 1;
         break;
 
-      case 2:
+      case 11:
+        // repete o loop
         break;
 
       default:
@@ -56,17 +89,8 @@ int main() {
   return 0;
 }
 
-void asciiArt() {
-  printf("  _     ___ ____ _   _ _____   _____ ____  \n");
-  printf(" | |   |_ _/ ___| | | |_   _| |  ___/ ___| \n");
-  printf(" | |    | | |  _| |_| | | |   | |_  \___ \\\n);
-  printf(" | |    | | |  _| |_| | | |   | |_  \\____ \\ \n");
-  printf(" | |___ | | |_| |  _  | | |   |  _| ___) |\n");
-  printf(" |_____|___\\____|_| |_| |_|   |_|   |____/");
-}
-
-void clearScreen() {
-  for(int i=0;i<50;i++)
+void clearScreen(int a) {
+  for(int i=0;i<a;i++)
     printf("\n");
 }
 int getCommand(char* str) {
@@ -82,5 +106,18 @@ int getCommand(char* str) {
 
   if (!strcmp(str, "clear\n")) return 9;
   if (!strcmp(str, "exit\n")) return 10;
+  if (!strcmp(str, "\n")) return 11;
   return 0;
+}
+void asciiArt() {
+  printf("                                            ");
+  printf("  _     ___ ____ _   _ _____   _____ ____  \n");
+  printf("                                            ");
+  printf(" | |   |_ _/ ___| | | |_   _| |  ___/ ___| \n");
+  printf("                                            ");
+  printf(" | |    | | |  _| |_| | | |   | |_  \\____\\ \n");
+  printf("                                            ");
+  printf(" | |___ | | |_| |  _  | | |   |  _|  __) |\n");
+  printf("                                            ");
+  printf(" |_____|___\\____|_| |_| |_|   |_|   |____/\n");
 }

@@ -1,26 +1,35 @@
 // Bit manipulation baseado em
 // https://www.mathcs.emory.edu/%7Echeung/Courses/255/Syllabus/1-C-intro/bit-array.html
 #include "bitops.h"
+#include <stdint.h> 
 
 void bitManipulation() {
 /* 
 int = 32bits/4bytes
 */
 
-// Metadata 4bytes ???
-  unsigned int metadata = 0;
+// Metadata 8bytes 
+// 2 bytes cada entrada
+
+  uint16_t metaIndice = 256
+
   // ○ Tamanho do índice (quantas entradas o índice possui, utilizar o valor 2^8)
-    
+  // indice 0 - 15
+  // 0000 0001 0000 0000
 
   // ○ Tamanho do cluster (utilizar o valor 32KB)
-    // 0010 0000 
- 
-  // ○ Byte onde o índice inicia (metadados iniciam no byte zero e vão até byte 3)
-    // byte 4 = 0000 0100
+  // 16 - 31
+  uint8_t metaTamanhoCuster = 32
+
+  // ○ Byte onde o índice inicia (metadados iniciam no byte zero e vão até byte 7)
+  // 0000 0111
+  // 32 - 47
+  uint8_t metaTamanhoCuster = 24
 
   // ○ Byte onde inicia o primeiro cluster
-    // 4bytes metadata + 256bytes indice = 
-    // byte 260 = 1 0000 0100
+  // 8bytes metadata + 256bytes indice =  byte 264 
+  // 100001000
+  // 48- 63
 
 /* 
    Indice =  entradas de 8 bits
@@ -28,7 +37,7 @@ int = 32bits/4bytes
    256/4(4bytes 1 int) = 64 ints
   */
   unsigned int indice[63];
-  for (int i = 0; i < 63; i++)
+  for (int i = 0; i < 64; i++)
     indice[i] = 0;                    // Clear the bit array
 
 // ○ ponteiro

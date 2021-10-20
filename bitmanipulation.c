@@ -66,7 +66,8 @@ void bitManipulation() {
 	int num = 255;
    fwrite(&num, 255,1, out);
 	num = 0;
-//   fwrite(&num, 8160000,1, out);
+  for(int j = 0 ; j < 10000; j++)
+    fwrite(&num, 816,1, out);
    if(ferror(out)){
       perror(__func__);
       exit(EXIT_FAILURE);

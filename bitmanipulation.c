@@ -33,7 +33,7 @@ void bitManipulation() {
   // 48- 63
   uint16_t clusterBegin = 259;
 
-  unsigned int indice[254];
+  uint8_t indice[254];
   for (int i = 0; i < 255; i++)
     indice[i] = 255;                    // Clear the bit array
 
@@ -51,6 +51,8 @@ void bitManipulation() {
       clusters[i][j] = 0;
   }
 
+  */
+
 	FILE* out = fopen("lighfs.bin", "wb");
    if (NULL==out) {
        fprintf(stderr, "I bet you saw THAT coming.\n");
@@ -64,12 +66,11 @@ void bitManipulation() {
 	int num = 255;
    fwrite(&num, 255,1, out);
 	num = 0;
-   fwrite(&num, 8160000,1, out);
+//   fwrite(&num, 8160000,1, out);
    if(ferror(out)){
       perror(__func__);
       exit(EXIT_FAILURE);
    }
    printf("asdsadas");
-   */
 }
 

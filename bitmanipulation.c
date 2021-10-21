@@ -33,9 +33,11 @@ void bitManipulation() {
   // 48- 63
   uint16_t clusterBegin = 259;
 
+/*
   uint8_t indice[254];
   for (int i = 0; i < 255; i++)
     indice[i] = 255;                    // Clear the bit array
+*/
 
   /*
     Os clusters são posicionados logo abaixo do índice e possuem 32KB de tamanho cada.
@@ -57,21 +59,21 @@ void bitManipulation() {
    if (NULL==out) {
        fprintf(stderr, "I bet you saw THAT coming.\n");
        exit(EXIT_FAILURE);
-   }
+	}
 
-   fwrite(&metaIndice, 1,1, out);
-   fwrite(&metaClusterSize, 1,1, out);
-   fwrite(&fatBegin, 1,1, out);
-   fwrite(&clusterBegin, 2,1, out);
-	int num = 255;
-   fwrite(&num, 255,1, out);
-	num = 0;
-  for(int j = 0 ; j < 10000; j++)
-    fwrite(&num, 816,1, out);
+   fwrite(&metaIndice, sizeof(metaIndice),1, out);
+   fwrite(&metaClusterSize, sizeof(metaClusterSize),1, out);
+   fwrite(&fatBegin, sizeof(fatBegin),1, out);
+   fwrite(&clusterBegin, sizeof(clusterBegin),1, out);
+	uint8_t num = 255;
+   fwrite(&num, sizeof(num),255, out);
+num = 0;
+   for(int i = 0; i < 8160000;i++){
+       fwrite(&num, sizeof(num),1, out);
+   }
    if(ferror(out)){
       perror(__func__);
       exit(EXIT_FAILURE);
    }
-   printf("asdsadas");
+   printf("COMPILADO!\n");
 }
-

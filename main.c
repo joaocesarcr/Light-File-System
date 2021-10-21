@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 
-//#include "utils.h"
+#include "utils.h"
 
 #define ANSI_COLOR_GREEN   "\x1b[32m"
 #define ANSI_COLOR_RED     "\x1b[31m"
@@ -10,47 +10,24 @@
 
 void asciiArt();
 void clearScreen(int a);
+void begin();
 int getCommand(char* str);
+void printCurrentDirectory(int index); 
+MetaData getMetaData(MetaData* data);
 
 int main() {
-  clearScreen(10);
-  asciiArt();
-  clearScreen(25);
+  begin(); // Clear screen & ascii logo
   int stop = 0;
   char input[80];
   char *ptr;
 
-  uint8_t metaIndexSize;
-  uint8_t metaClusterSize;
-  uint8_t metaIndexBegin;
-  uint16_t metaClusterBegin;
-
-  FILE* lightfs = fopen("lightfs.bin", "rb");
-  if (NULL==lightfs) {
-    fprintf(stderr, "Erro arquivo main\n");
-	}
-  fread(&metaIndexSize, 1, 1, lightfs);
-  fread(&metaClusterSize, 1, 1, lightfs);
-  fread(&metaIndexBegin, 1, 1, lightfs);
-  fread(&metaClusterBegin, 2, 1, lightfs);
-  fclose(lightfs);
-/*
-  printf("size of metaIndexSize = %d\n",metaIndexSize);
-  printf("size of meta indice = %d\n",metaClusterSize);
-  printf("size of meta indice = %d\n",metaIndexBegin);
-  printf("size of meta indice = %d\n",metaClusterBegin);
-*/
-
+  // Get filesystem metadata
+  MetaData data = getMetaData(&data);
 
   int dirIndex = 0;
-//  Cluster currentCluster =  getCluster(dirIndex);
-
+  // Main loop
   do {
-    printf(ANSI_COLOR_GREEN); 
-//    printf("/%s/ $ ",currentCluster.name);
-    printf("/root $ ");
-    printf(ANSI_COLOR_RESET); 
-
+    printCurrentDirectory(dirIndex);
     fgets(input,80, stdin);
     ptr = strtok(input," "); // Separa o input a partir do " "
 
@@ -151,4 +128,30 @@ int getCommand(char* str) {
   if (!strcmp(str, "exit\n")) return 10;
   if (!strcmp(str, "\n")) return 11;
   return 0;
+}
+
+void begin() {
+  clearScreen(10);
+  asciiArt();
+  clearScreen(25);
+}
+
+void printCurrentDirectory(int index) {
+    printf(ANSI_COLOR_GREEN); 
+    printf("/root $ ");
+    printf(ANSI_COLOR_RESET); 
+
+}
+
+MetaData getMetaData(MetaData* data) {
+  FILE* lightfs = fopen("lightfs.bin", "rb");
+    if (NULL==lightfs) {
+      fprintf(stderr, "Erro arquivo main\n");
+    }
+    fread(&data->metaIndexSize, 1, 1, lightfs);
+    fread(&data->metaClusterSize, 1, 1, lightfs);
+    fread(&data->metaIndexBegin, 1, 1, lightfs);
+    fread(&data->metaClusterBegin, 2, 1, lightfs);
+  fclose(lightfs);
+  return *data;
 }

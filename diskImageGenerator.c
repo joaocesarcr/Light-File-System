@@ -6,14 +6,14 @@
 
 int main() {
   
-  // Tamanho do índice (quantas entradas o índice possui, utilizar o valor 2^8)
+  // Tamanho do índice
+  //(quantas entradas o índice possui, utilizar o valor 2^8)
   uint8_t metaIndice = 255;
-  //  printf("size of meta indice = %lu",sizeof(metaIndice));
 
   // Tamanho do cluster (utilizar o valor 32KB)
   uint8_t metaClusterSize = 32;
 
-  // Byte onde o índice inicia (metadados iniciam no byte zero e vão até byte 3)
+  // Byte onde o índice inicia 
   uint8_t fatBegin = 5;
 
   // Byte onde inicia o primeiro cluster

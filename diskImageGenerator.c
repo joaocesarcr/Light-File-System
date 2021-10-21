@@ -19,9 +19,9 @@ int main() {
   uint16_t clusterBegin = 259;
 
 	FILE* out = fopen("lighfs.bin", "wb");
-   if (NULL==out) {
-       fprintf(stderr, "erro arquivo\n");
-       exit(EXIT_FAILURE);
+  if (NULL==out) {
+    fprintf(stderr, "erro arquivo\n");
+    exit(EXIT_FAILURE);
 	}
 
   fwrite(&metaIndice, sizeof(metaIndice),1, out);

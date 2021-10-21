@@ -1,35 +1,41 @@
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
 #include "utils.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
 
 struct sCluster getCluster(int index) {
-  return NULL;
+  Cluster a;
+  return a ;
 }
 
 void mkdir(char* nome) {
   
 }
 
-void writeCluster(Metadata mData, Cluster cInfo, int indexPosition) {
-  int position = data.clusterBegin + (mData.clusterSize * 1000 * indexPosition);
+void writeCluster(MetaData data, Cluster cInfo, int indexPosition) {
+  int position = data.clusterBegin + (data.clusterSize * 1000 * indexPosition);
  	FILE* lightfs = fopen("lightfs.bin", "wb");
     fseek(lightfs,position,SEEK_SET),
-    fwrite(&c.Info, sizeof(cInfo),1, lightfs);
+//    fwrite(&c.Info, sizeof(cInfo),1, lightfs);
   fclose(lightfs);
 }
 
-struct sCluster createCluster(char dirFlag, char name[30], int size, int nextCluster, char* files) {
+struct sCluster createCluster(uint8_t dirFlag, char name[30], int size, int nextCluster, char* files) {
   Cluster newCluster;
   newCluster.dirFlag = dirFlag;
-  newCluster.name = name;
+//  newCluster.name = name;
+  strcpy(newCluster.name,name);
   newCluster.size = size;
-  newCluster.nextCluster = nextCLuster;
-  newCluster.files  = flies;
+  newCluster.nextCluster = nextCluster;
+  newCluster.files  = files;
+
+  return newCluster;
 
 }
 
-void clearScreen(int a) {
-  for(int i=0;i<a;i++)
-    printf("\n");
-}
 void asciiArt() {
   printf(ANSI_COLOR_GREEN); 
   printf("                                            ");
@@ -66,4 +72,32 @@ void ascii() {
   asciiArt();
   clearScreen(25);
 }
+void clearScreen(int a) {
+  for(int i=0;i<a;i++)
+    printf("\n");
+}
 
+void begin() {
+  clearScreen(10);
+  asciiArt();
+  clearScreen(25);
+}
+
+void printCurrentDirectory(int index) {
+    printf(ANSI_COLOR_GREEN); 
+    printf("/root $ ");
+    printf(ANSI_COLOR_RESET); 
+}
+
+MetaData getMetaData(MetaData* data) {
+  FILE* lightfs = fopen("lightfs.bin", "rb");
+    if (NULL==lightfs) {
+      fprintf(stderr, "Erro arquivo main\n");
+    }
+    fread(&data->indexSize, 1, 1, lightfs);
+    fread(&data->clusterSize, 1, 1, lightfs);
+    fread(&data->indexBegin, 1, 1, lightfs);
+    fread(&data->clusterBegin, 2, 1, lightfs);
+  fclose(lightfs);
+  return *data;
+}

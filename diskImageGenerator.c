@@ -4,10 +4,11 @@
 #include <stdlib.h> 
 #include <stdio.h> 
 
-void bitManipulation();
 int main() {
+  
   // Tamanho do índice (quantas entradas o índice possui, utilizar o valor 2^8)
   uint8_t metaIndice = 255;
+  //  printf("size of meta indice = %lu",sizeof(metaIndice));
 
   // Tamanho do cluster (utilizar o valor 32KB)
   uint8_t metaClusterSize = 32;
@@ -18,7 +19,7 @@ int main() {
   // Byte onde inicia o primeiro cluster
   uint16_t clusterBegin = 259;
 
-	FILE* out = fopen("lighfs.bin", "wb");
+	FILE* out = fopen("lightfs.bin", "wb");
   if (NULL==out) {
     fprintf(stderr, "erro arquivo\n");
     exit(EXIT_FAILURE);
@@ -29,10 +30,15 @@ int main() {
   fwrite(&fatBegin, sizeof(fatBegin),1, out);
   fwrite(&clusterBegin, sizeof(clusterBegin),1, out);
 
-	uint8_t num = 255;
-  for(int i=0;i<255;i++) 
+  // Primeira entrada no índice = ROOT
+	uint8_t num = 0;
+    fwrite(&num, sizeof(num),1, out);
+
+	num = 255;
+  for(int i=0;i<254;i++) 
     fwrite(&num, sizeof(num),1, out);
   num = 0;
+
   for(int i = 0; i < 8160000;i++)
     fwrite(&num, sizeof(num),1, out);
   

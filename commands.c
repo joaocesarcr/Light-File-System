@@ -39,7 +39,7 @@ void getDirName(MetaData data, int indexPosition, int cFlag) {
     printf("/%s $ ",nome);
   } else printf("/%s ",nome);
   printf(ANSI_COLOR_RESET); 
-}
+  }
 
 int getDirIndex(MetaData data, char name[30]) {
   // Recebe o nome de um diretorio e retorna seu indice na tabela
@@ -66,7 +66,7 @@ int getDirIndex(MetaData data, char name[30]) {
   fclose(lightfs);
   printf("Nao achou getDirIndex\n)");
   return -1;
-}
+  }
 
 uint8_t findFreeSpace(MetaData data) {
   // Retorna a primeira posicao vazia na tablea FAT
@@ -91,7 +91,7 @@ uint8_t findFreeSpace(MetaData data) {
   fclose(lightfs);
 
   return -1;
-}
+  }
 
 void mkdir(MetaData data, uint8_t currentDir, char name[30]) {
   // Alterar tabela FAT
@@ -114,7 +114,7 @@ void mkdir(MetaData data, uint8_t currentDir, char name[30]) {
     fwrite(name, name[30],1, lightfs);
   fclose(lightfs);
 //  printf("Cluster Metadata escrita em posicao = %d\n", position);
-}
+  }
 
 void dir(MetaData data, uint8_t currentDir) {
   // Percorre a fat inteira achando referencias ao diretorio atual
@@ -132,7 +132,7 @@ void dir(MetaData data, uint8_t currentDir) {
     }
   } while (position != 255);
   fclose(lightfs);
-}
+  }
 
 int cd(MetaData data, uint8_t currentDir, char name[30]) {
   // Acha a posicao do diretorio desejado
@@ -150,5 +150,5 @@ int cd(MetaData data, uint8_t currentDir, char name[30]) {
   fclose(lightfs);
   printf("ERROR\n");
   return currentDir;
-}
+  }
 

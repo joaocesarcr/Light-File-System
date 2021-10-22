@@ -8,9 +8,11 @@
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
-// TODO: CD nao esta funcionando, problema na comparacao de strings
-// Nao permitir a criacao de diretorios com mesmo nome
-// Arvore para melhorar desemepho?
+// TODO CD nao esta funcionando, problema na comparacao de strings
+// TODO Nao permitir a criacao de diretorios com mesmo nome
+// TODO Passar metadata para variavel global
+// TODO DIR atual nao encadeado
+// Arvore vai facilitar a implementacao e deixar o codigo mais legivel/elegante
 
 int main() {
   begin(); // Clear screen & ascii logo

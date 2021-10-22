@@ -19,22 +19,18 @@ int main() {
   int currentDir = 0;
   // Main loop
   do {
-    printCurrentDirectory(currentDir);
+    getDirName(data, currentDir,1); 
     fgets(input,80, stdin);
     ptr = strtok(input," "); // Separa o input a partir do " "
 
-    /*
-    ptr = strtok(NULL," "); // 
-    printf("Segunda: %s\n",ptr);
-    */
-
     switch(getCommand(ptr)) {
       case 1:
-        // cd
+        ptr = strtok(NULL," "); // 
+        currentDir = cd(data,currentDir,ptr);
         break;
 
       case 2:
-        // dir
+        dir(data,currentDir);
         break;
 
       case 3:
@@ -42,7 +38,8 @@ int main() {
         break;
 
       case 4:
-        //mkdir
+        ptr = strtok(NULL," "); // 
+        mkdir(data,currentDir,ptr);
         break;
 
       case 5:

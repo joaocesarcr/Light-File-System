@@ -8,11 +8,9 @@
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
-// TODO CD nao esta funcionando, problema na comparacao de strings
-// TODO Nao permitir a criacao de diretorios com mesmo nome
-// TODO Passar metadata para variavel global
-// TODO DIR atual nao encadeado
+//
 // Arvore vai facilitar a implementacao e deixar o codigo mais legivel/elegante
+// Inferno implementar arvore
 
 int main() {
   begin(); // Clear screen & ascii logo
@@ -24,16 +22,21 @@ int main() {
   MetaData data = getMetaData(&data);
 
   int currentDir = 0;
+  char *dirName = "/root";
   // Main loop
   do {
-    getDirName(data, currentDir,1); 
+    printDirPath(data,currentDir);
+    printf(" $ ");
     fgets(input,80, stdin);
     ptr = strtok(input," "); // Separa o input a partir do " "
 
     switch(getCommand(ptr)) {
       case 1:
-        ptr = strtok(NULL," "); // 
-        currentDir = cd(data,currentDir,ptr);
+        ptr = strtok(NULL,"\n"); // 
+        if (!strcmp(ptr,"..")) {
+          currentDir = findParent(data,currentDir);
+        }
+        else currentDir = cd(data,currentDir,ptr);
         break;
 
       case 2:

@@ -36,23 +36,13 @@ int getCommand(char* str) {
   if (!strcmp(str, "\n")) return 11;
   return 0;
   }
-void ascii() {
-  clearScreen(10);
-  asciiArt();
-  clearScreen(25);
-  }
 void clearScreen(int a) {
   for(int i=0;i<a;i++)
-    printf("\n");
+  printf("\n");
   }
 void begin() {
   clearScreen(10);
   asciiArt();
   clearScreen(25);
-  }
-void printCurrentDirectory(int index) {
-  printf(ANSI_COLOR_GREEN); 
-  printf("/root $ ");
-  printf(ANSI_COLOR_RESET); 
   }
 

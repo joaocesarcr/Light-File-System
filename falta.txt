@@ -1,0 +1,21 @@
+DIR X
+MKDIR X
+
+CD
+  ajeitar para aceitar varias entradas
+
+RM
+  ter uma flag EOF 
+  apagar o registro na fat
+  colocar a flag EOF no comeco dos arquivos
+
+MKFILE
+EDIT
+MOVE
+RENAME
+
+// TODO Passar metadata para variavel global
+// TODO Tratamento de entradas
+// TODO Nao permitir a criacao de diretorios com mesmo nome
+// TODO Ter alguma flag para ser lida como EOF, para falitar o RM
+

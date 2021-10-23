@@ -22,24 +22,21 @@ MetaData getMetaData(MetaData* data) {
   return *data;
   }
 
-void getDirName(MetaData data, int indexPosition, int cFlag) {
+char* getDirName(MetaData data, int indexPosition) {
   // Printa o nome de um diretorio a partir de seu indice
   int clusterSize = data.clusterSize* 1000;
   // Calcula o byte ocupado pelo nome do cluster
   int position = data.clusterBegin  + (clusterSize * indexPosition);
   int num;
-  char nome[30];
+  char *name;
   FILE* lightfs = fopen("lightfs.bin", "rb");
     fseek(lightfs,position,SEEK_SET);
     fread(&num, 1, 1, lightfs);
-    fgets(nome, 30, lightfs);
+    fgets(name, 30, lightfs);
   fclose(lightfs);
-  if (cFlag == 1) {
-    printf(ANSI_COLOR_GREEN); 
-    printf("/%s $ ",nome);
-  } else printf("/%s ",nome);
-  printf(ANSI_COLOR_RESET); 
-  }
+  puts(name);
+  return name;
+}
 
 int getDirIndex(MetaData data, char name[30]) {
   // Recebe o nome de um diretorio e retorna seu indice na tabela
@@ -50,21 +47,23 @@ int getDirIndex(MetaData data, char name[30]) {
   char indexName[30];
   FILE* lightfs = fopen("lightfs.bin", "r+b");
 
-  printf("Index name procurado = %s\n",name); 
+//  printf("Index name procurado = %s\n",name); 
   do {
     index++;
     position = data.clusterBegin  + (clusterSize * index);
     fseek(lightfs,position,SEEK_SET);
     fread(&num, 1, 1, lightfs);
     fgets(indexName, 30, lightfs);
-    if (*indexName) printf("Index name = %s\n",indexName); 
-    if (indexName == name) {
+//    if (*indexName) printf("Index name = %s\n",indexName); 
+    if (!strcmp(indexName,name)) {
       fclose(lightfs);
       return index;
     }
   } while (index != 255);
   fclose(lightfs);
-  printf("Nao achou getDirIndex\n)");
+  printf(ANSI_COLOR_RED); 
+  printf("%s not found\n",name);
+  printf(ANSI_COLOR_RESET); 
   return -1;
   }
 
@@ -93,25 +92,76 @@ uint8_t findFreeSpace(MetaData data) {
   return -1;
   }
 
+int findParent(MetaData data, int dir) {
+  uint8_t position = data.indexBegin + dir;
+  int num = 0;
+
+  FILE* lightfs = fopen("lightfs.bin", "rb");
+    fseek(lightfs,position,SEEK_SET);
+    fread(&num, 1, 1, lightfs);
+  fclose(lightfs);
+
+  return num;
+}
+
+void printDirPath(MetaData data, int currentDir) {
+  if (currentDir != 0) printDirPath(data, findParent(data,currentDir));
+  printDirName(data, currentDir, 1);
+}
+
+void printDirName(MetaData data, int indexPosition, int cFlag) {
+  // Printa o nome de um diretorio a partir de seu indice
+  int clusterSize = data.clusterSize* 1000;
+  // Calcula o byte ocupado pelo nome do cluster
+  int position = data.clusterBegin  + (clusterSize * indexPosition);
+  int num;
+  char nome[30];
+  FILE* lightfs = fopen("lightfs.bin", "rb");
+    fseek(lightfs,position,SEEK_SET);
+    fread(&num, 1, 1, lightfs);
+    fgets(nome, 30, lightfs);
+  fclose(lightfs);
+  if (cFlag == 1) {
+    printf(ANSI_COLOR_GREEN); 
+    printf("/%s",nome);
+  } else printf("/%s",nome);
+  printf(ANSI_COLOR_RESET); 
+}
+
 void mkdir(MetaData data, uint8_t currentDir, char name[30]) {
+  // TODO cluster diretorio tera array indicando seus filhos
   // Alterar tabela FAT
   // Acha espaço livre
-  int freePosition = findFreeSpace(data);
+  uint8_t freePosition = findFreeSpace(data);
   int position = freePosition + data.indexBegin;
   
   name = strtok(name,"\n"); // Separa o input a partir do " "
-  printf("Diretorio criado na posicao %d\n",position);
+//  printf("Diretorio criado na posicao %d\n",freePosition);
   FILE* lightfs = fopen("lightfs.bin", "r+b");
     fseek(lightfs,position,SEEK_SET);
     fwrite(&currentDir, sizeof(currentDir),1, lightfs);
 
   // Escrever no cluster flag e seu nome
-    uint8_t flag = 111;
+    uint8_t flag = 1;
     int clusterSize = data.clusterSize* 1000;
     position = data.clusterBegin  + (clusterSize * freePosition);
     fseek(lightfs,position,SEEK_SET);
     fwrite(&flag, sizeof(flag),1, lightfs);
     fwrite(name, name[30],1, lightfs);
+
+  // Escrever no cluster do pai o indice do filho
+  // loop para achar byte vazio no cluster
+    position = 240 + sizeof(flag) + data.clusterBegin  + (clusterSize * currentDir); // 240 = char[30];
+    fseek(lightfs,position,SEEK_SET); // Coloca o cursor onde os enderecos dos filhos comecam
+    int8_t number = 0;
+
+    do { // Coloca o cursor no primeiro espaco vazio;
+      // Lembrando que FREAD já muda a posicao do cursor:
+      // le até encontrar um espaco vazio
+      fread(&number, 1, 1, lightfs);
+    } while (!number);
+
+    fwrite(&freePosition, sizeof(freePosition),1, lightfs);
   fclose(lightfs);
 //  printf("Cluster Metadata escrita em posicao = %d\n", position);
   }
@@ -127,7 +177,7 @@ void dir(MetaData data, uint8_t currentDir) {
     fseek(lightfs,position,SEEK_SET);
     fread(&num, 1, 1, lightfs);
     if (num == currentDir) {
-      getDirName(data, position - data.indexBegin,0);
+      printDirName(data, position - data.indexBegin,0);
       printf("\n");
     }
   } while (position != 255);
@@ -135,10 +185,18 @@ void dir(MetaData data, uint8_t currentDir) {
   }
 
 int cd(MetaData data, uint8_t currentDir, char name[30]) {
+  int index = cdAux(data,currentDir,name);
+  return index;
+  }
+
+int cdAux(MetaData data, uint8_t currentDir, char name[30]) {
   // Acha a posicao do diretorio desejado
   int index = getDirIndex(data,name);
+  if (index == -1) return currentDir;
 
+  
   name = strtok(name,"\n"); // Separa o input a partir do " "
+
   // Verifica se o diretorio desejado tem como pai o diretorio atual
   uint8_t num = 0;
   FILE* lightfs = fopen("lightfs.bin", "r+b");
@@ -151,4 +209,6 @@ int cd(MetaData data, uint8_t currentDir, char name[30]) {
   printf("ERROR\n");
   return currentDir;
   }
+
+//void rename(MetaData data, uint8_t currentDir, char name[30]) { }
 

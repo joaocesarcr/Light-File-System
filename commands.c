@@ -147,7 +147,7 @@ void mkdir(MetaData data, uint8_t currentDir, char name[30]) {
     position = data.clusterBegin  + (clusterSize * freePosition);
     fseek(lightfs,position,SEEK_SET);
     fwrite(&flag, sizeof(flag),1, lightfs);
-    fwrite(name, name[30],1, lightfs);
+    fwrite(name, 240,1, lightfs);
 
     fclose(lightfs);
 //  printf("Cluster Metadata escrita em posicao = %d\n", position);
@@ -223,7 +223,7 @@ void remover(MetaData data, uint8_t currentDir, char name[30]) {
 }
 
 
-void mkfile(MetaData data, uint8_t currentDir, char name[30]){
+void mkfile(MetaData data, uint8_t currentDir, char name[30]) {
   uint8_t freePosition = findFreeSpace(data);
   int position = freePosition + data.indexBegin;
   name = strtok(name,"\n");
@@ -300,9 +300,54 @@ int gDI(MetaData data, char name[30]) {
   }
 
 void renameD(MetaData data, uint8_t currentDir, char name[30]){
-	// 
-	
 	char* token = strtok_r(name, " ", &name);
-	printf("token = %s\n", token);
+	int clusterSize = data.clusterSize * 1000;
+	//token = a.txt
+	// name = b.txt
 	printf("name = %s\n",name);
+	printf("token = %s\n",token);
+	int position = getDirIndex(data,token);
+	
+	printf("position = %d\n",position);
+	position = data.clusterBegin  + (clusterSize * position);
+
+  FILE* lightfs = fopen("lightfs.bin", "r+b");
+    fseek(lightfs,position+1,SEEK_SET);
+    fwrite(name, 240,1, lightfs);
+  fclose(lightfs);
+}
+
+void movebarra (MetaData data, char name[30])
+{
+		printf("NAME EDIT = %s\n",name);
+    char *nameOrigem, *nameDestino, *rest;
+    int clusterSize = data.clusterSize* 1000;
+    int position = 0;
+    uint8_t indexOrigem, indexDestino;
+    char *atual;
+
+    nameOrigem = strtok_r(name," ",&nameDestino);
+    nameDestino = strtok(nameDestino,"\n");
+
+    indexOrigem = getDirIndex(data, nameOrigem);
+    indexDestino = getDirIndex(data, nameDestino);
+
+    position = data.indexBegin + indexOrigem;
+    FILE* lightfs = fopen("lightfs.bin", "r+b");
+    fseek(lightfs,position,SEEK_SET);
+    fwrite(&indexDestino,sizeof(indexDestino),1,lightfs);
+    fclose(lightfs);
+}
+
+void edit(MetaData data, char* name)
+{
+  char *parte = strtok_r(name, " ", &name);
+  int pos = getDirIndex(data, parte);  
+  int position = data.clusterBegin + (pos*data.clusterSize*1000);
+  uint8_t eof = 255;
+  FILE* lightfs = fopen("lightfs.bin", "r+b");
+  fseek(lightfs, position+241,SEEK_SET);
+  fwrite(name, sizeof(name), 1, lightfs);
+  fwrite(&eof, sizeof(eof), 1, lightfs);
+  fclose(lightfs);
 }

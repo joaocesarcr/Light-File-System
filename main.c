@@ -62,10 +62,30 @@ int main() {
 
       case 6:
         //edit
+				cDir = currentDir;
+				while ((token = strtok_r(rest, "/", &rest)))  {
+          currentDir = movBDiv(data,currentDir,token);
+					tokenAtual = token;
+				}
+/*
+				printf("rest = %s\n",rest);
+				printf("token = %s\n",token);
+				printf("input = %s\n",input);
+				printf("tokenAtual = %s\n",tokenAtual);
+				currentDir = cDir;
+*/
+				edit(data,tokenAtual);
         break;
 
       case 7:
         //move
+        cDir = currentDir;
+        while ((token = strtok_r(rest, "/",&rest))) {
+          currentDir = movBDiv(data, currentDir, token);
+          tokenAtual = token;
+        }
+        movebarra(data,tokenAtual);
+        currentDir = cDir;
 				break;
 
       case 8:
@@ -73,19 +93,10 @@ int main() {
 				cDir = currentDir;
 				while ((token = strtok_r(rest, "/", &rest)))  {
           currentDir = movBDiv(data,currentDir,token);
-/*
-					printf("input = %s\n",input);
-					printf("rest = %s\n",rest);
-					printf("TOKEN = %s\n",token);
-*/
-					 tokenAtual = token;
-					}
-					
-
+					tokenAtual = token;
+				}
 				renameD(data,currentDir,tokenAtual);
-
 				currentDir = cDir;
-		
         break;
 
       case 9:

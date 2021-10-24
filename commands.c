@@ -210,8 +210,7 @@ int cdAux(MetaData data, uint8_t currentDir, char name[30]) {
   return currentDir;
   }
 
-void rename(MetaData data, uint8_t currentDir, char name[30]) {
- // 
-}
-
-
+//void renameD(MetaData data, uint8_t currentDir, char name[30]) {
+ // Vai ate o cluster e altera o nome
+ // Vai ate o cluster
+ //

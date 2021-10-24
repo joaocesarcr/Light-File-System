@@ -1,17 +1,15 @@
 DIR X
+MKFILE X
 MKDIR X
   percorrer e mudar o nome caso ja exista
 CD X
-  fazer cd receber espaco
 RM
-  ter uma flag EOF 
-  apagar o registro na fat
-  colocar a flag EOF no comeco dos arquivos
-MKFILE
-EDIT
+  nao deletar dir atual
+  verificar se o dir esta acessivel
 
-MOVE
+EDIT
 RENAME
+MOVE
 
 // TODO Passar metadata para variavel global
 // TODO Tratamento de entradas

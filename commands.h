@@ -18,3 +18,8 @@ int cdAux(MetaData data, uint8_t currentDir, char name[30]);
 
 void printDirPath(MetaData data, int currentDir);
 int findParent(MetaData data, int dir);
+void remover(MetaData data, uint8_t currentDir, char name[30]);
+void mkfile(MetaData data, uint8_t currentDir, char name[30]);
+void renameD(MetaData data, uint8_t currentDir, char name[30]);
+int gDI(MetaData data, char name[30]);
+int movBDiv(MetaData data, uint8_t currentDir, char name[30]);

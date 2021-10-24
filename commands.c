@@ -55,7 +55,7 @@ int getDirIndex(MetaData data, char name[30]) {
     fread(&num, 1, 1, lightfs);
     fgets(indexName, 30, lightfs);
 //    if (*indexName) printf("Index name = %s\n",indexName); 
-    if (!strcmp(indexName,name)) {
+    if ((!strcmp(indexName,name)) && (num != 255)) {
       fclose(lightfs);
       return index;
     }
@@ -149,26 +149,14 @@ void mkdir(MetaData data, uint8_t currentDir, char name[30]) {
     fwrite(&flag, sizeof(flag),1, lightfs);
     fwrite(name, name[30],1, lightfs);
 
-  // Escrever no cluster do pai o indice do filho
-  // loop para achar byte vazio no cluster
-    position = 240 + sizeof(flag) + data.clusterBegin  + (clusterSize * currentDir); // 240 = char[30];
-    fseek(lightfs,position,SEEK_SET); // Coloca o cursor onde os enderecos dos filhos comecam
-    int8_t number = 0;
-
-    do { // Coloca o cursor no primeiro espaco vazio;
-      // Lembrando que FREAD já muda a posicao do cursor:
-      // le até encontrar um espaco vazio
-      fread(&number, 1, 1, lightfs);
-    } while (!number);
-
-    fwrite(&freePosition, sizeof(freePosition),1, lightfs);
-  fclose(lightfs);
+    fclose(lightfs);
 //  printf("Cluster Metadata escrita em posicao = %d\n", position);
   }
 
 void dir(MetaData data, uint8_t currentDir) {
   // Percorre a fat inteira achando referencias ao diretorio atual
   // Se diretorio atual == diretorio apontado na fat, imprime
+	int emptyFlag = 0;
   int position = data.indexBegin;
   uint8_t num = 0;
   FILE* lightfs = fopen("lightfs.bin", "r+b");
@@ -178,28 +166,40 @@ void dir(MetaData data, uint8_t currentDir) {
     fread(&num, 1, 1, lightfs);
     if (num == currentDir) {
       printDirName(data, position - data.indexBegin,0);
+			emptyFlag++;
       printf("\n");
     }
   } while (position != 255);
+	if (!emptyFlag) printf("Empty\n");
   fclose(lightfs);
   }
 
 int cd(MetaData data, uint8_t currentDir, char name[30]) {
-  int index = cdAux(data,currentDir,name);
-  return index;
-  }
+  return cdAux(data,currentDir,name);
+}
 
 int cdAux(MetaData data, uint8_t currentDir, char name[30]) {
-  // Acha a posicao do diretorio desejado
+	uint8_t num;
+
   name = strtok(name,"\n"); // Separa o input a partir do " "
   int index = getDirIndex(data,name);
+	// Verifica se é arquivo ou dir
+	int clusterSize = data.clusterSize * 1000;
+	int position = data.clusterBegin  + (clusterSize * index);
+  FILE* lightfs = fopen("lightfs.bin", "r+b");
+		fseek(lightfs,position,SEEK_SET);
+		fread(&num, 8, 1, lightfs);
+	if (!num) {
+		printf(ANSI_COLOR_RED); 
+		printf("Error\n");
+		printf(ANSI_COLOR_RESET); 
+		return currentDir;	
+	}
+
+  // Acha a posicao do diretorio desejado
   if (index == -1) return currentDir;
 
-  
-
   // Verifica se o diretorio desejado tem como pai o diretorio atual
-  uint8_t num = 0;
-  FILE* lightfs = fopen("lightfs.bin", "r+b");
     fseek(lightfs,index + data.indexBegin,SEEK_SET);
     fread(&num, 1, 1, lightfs);
     if (num == currentDir) {
@@ -210,7 +210,99 @@ int cdAux(MetaData data, uint8_t currentDir, char name[30]) {
   return currentDir;
   }
 
-//void renameD(MetaData data, uint8_t currentDir, char name[30]) {
- // Vai ate o cluster e altera o nome
- // Vai ate o cluster
- //
+
+void remover(MetaData data, uint8_t currentDir, char name[30]) {
+  name = strtok(name,"\n"); // Separa o input a partir do " "
+  int pos = getDirIndex(data, name);
+  int position = pos + data.indexBegin; 
+  uint8_t  final = 255; 
+  FILE* lightfs = fopen("lightfs.bin", "r+b");
+    fseek(lightfs,position,SEEK_SET);
+    fwrite(&final, sizeof(currentDir),1, lightfs);
+  fclose(lightfs);
+}
+
+
+void mkfile(MetaData data, uint8_t currentDir, char name[30]){
+  uint8_t freePosition = findFreeSpace(data);
+  int position = freePosition + data.indexBegin;
+  name = strtok(name,"\n");
+  //Escreve na fat quem e o pai
+  FILE* lightfs = fopen("lightfs.bin", "r+b");
+    fseek(lightfs,position,SEEK_SET);
+    fwrite(&currentDir, sizeof(currentDir),1, lightfs);
+
+    // Escrever no cluster flag e seu nome
+    uint8_t flag = 0;
+    int clusterSize = data.clusterSize* 1000;
+    position = data.clusterBegin  + (clusterSize * freePosition);
+    fseek(lightfs,position,SEEK_SET);
+    fwrite(&flag, sizeof(flag),1, lightfs);
+    fwrite(name, 30*8,1, lightfs);
+    fclose(lightfs);
+}
+
+int movBDiv(MetaData data, uint8_t currentDir, char name[30]) {
+	uint8_t num;
+
+  name = strtok(name,"\n"); // Separa o input a partir do " "
+  int index = gDI(data,name);
+	// Verifica se é arquivo ou dir
+	int clusterSize = data.clusterSize * 1000;
+	int position = data.clusterBegin  + (clusterSize * index);
+  FILE* lightfs = fopen("lightfs.bin", "r+b");
+		fseek(lightfs,position,SEEK_SET);
+		fread(&num, 8, 1, lightfs);
+	if (!num) {
+		printf(ANSI_COLOR_RED); 
+		printf("Error\n");
+		printf(ANSI_COLOR_RESET); 
+		return currentDir;	
+	}
+
+  // Acha a posicao do diretorio desejado
+  if (index == -1) return currentDir;
+
+  // Verifica se o diretorio desejado tem como pai o diretorio atual
+    fseek(lightfs,index + data.indexBegin,SEEK_SET);
+    fread(&num, 1, 1, lightfs);
+    if (num == currentDir) {
+      return index;
+    }  
+  fclose(lightfs);
+  printf("ERROR\n");
+  return currentDir;
+  }
+
+int gDI(MetaData data, char name[30]) {
+  // Recebe o nome de um diretorio e retorna seu indice na tabela
+  int clusterSize = data.clusterSize* 1000;
+  int position = data.clusterBegin + clusterSize;
+  int num;
+  int index = 0;
+  char indexName[30];
+  FILE* lightfs = fopen("lightfs.bin", "r+b");
+//  printf("Index name procurado = %s\n",name); 
+  do {
+    index++;
+    position = data.clusterBegin  + (clusterSize * index);
+    fseek(lightfs,position,SEEK_SET);
+    fread(&num, 1, 1, lightfs);
+    fgets(indexName, 30, lightfs);
+//    if (*indexName) printf("Index name = %s\n",indexName); 
+    if ((!strcmp(indexName,name)) && (num != 255)) {
+      fclose(lightfs);
+      return index;
+    }
+  } while (index != 255);
+  fclose(lightfs);
+  return -1;
+  }
+
+void renameD(MetaData data, uint8_t currentDir, char name[30]){
+	// 
+	
+	char* token = strtok_r(name, " ", &name);
+	printf("token = %s\n", token);
+	printf("name = %s\n",name);
+}

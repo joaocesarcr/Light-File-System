@@ -1,8 +1,8 @@
 DIR X
 MKDIR X
 
-CD
-  ajeitar para aceitar varias entradas
+CD X
+  fazer cd receber espaco
 
 RM
   ter uma flag EOF 

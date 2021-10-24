@@ -23,6 +23,7 @@ void asciiArt() {
 int getCommand(char* str) {
   // Recebe o comando em str e retorna int para o swtich/case
   if (!strcmp(str, "cd")) return 1;
+  if (!strcmp(str, "cd\n")) return 12;
   if (!strcmp(str, "dir\n")) return 2;
   if (!strcmp(str, "rm")) return 3;
   if (!strcmp(str, "mkdir")) return 4;

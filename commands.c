@@ -191,11 +191,11 @@ int cd(MetaData data, uint8_t currentDir, char name[30]) {
 
 int cdAux(MetaData data, uint8_t currentDir, char name[30]) {
   // Acha a posicao do diretorio desejado
+  name = strtok(name,"\n"); // Separa o input a partir do " "
   int index = getDirIndex(data,name);
   if (index == -1) return currentDir;
 
   
-  name = strtok(name,"\n"); // Separa o input a partir do " "
 
   // Verifica se o diretorio desejado tem como pai o diretorio atual
   uint8_t num = 0;
@@ -210,5 +210,8 @@ int cdAux(MetaData data, uint8_t currentDir, char name[30]) {
   return currentDir;
   }
 
-//void rename(MetaData data, uint8_t currentDir, char name[30]) { }
+void rename(MetaData data, uint8_t currentDir, char name[30]) {
+ // 
+}
+
 

@@ -18,6 +18,7 @@ int main() {
 
   int currentDir = 0, cDir = 0;;
 
+	char* segundo,* tokenAtual2;
   char* token;
   char* rest;
   char* ptr;
@@ -78,13 +79,27 @@ int main() {
         break;
 
       case 7:
-        //move
-        cDir = currentDir;
-        while ((token = strtok_r(rest, "/",&rest))) {
+				strtok_r(rest," ",&token);
+        printf("token: %s\n",token); //token é o segundo
+        printf("rest: %s\n",rest); //rest é o primeiro
+
+        strcpy(segundo,token);
+        printf("segundo: %s",segundo);
+
+        while ((token = strtok_r(rest, "/",&rest)))
+        {
           currentDir = movBDiv(data, currentDir, token);
           tokenAtual = token;
         }
-        movebarra(data,tokenAtual);
+        
+        while ((token = strtok_r(segundo, "/",&segundo)))
+        {
+          currentDir = movBDiv(data, currentDir, token);
+          tokenAtual2 = token;
+        }
+
+        movebarra(data,tokenAtual,tokenAtual2);
+
         currentDir = cDir;
 				break;
 

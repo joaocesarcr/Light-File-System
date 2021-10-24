@@ -2,12 +2,11 @@ DIR X
 	printar arquivo sem /
 MKFILE X
 MKDIR X
-  percorrer e mudar o nome caso ja exista
+  mudar o nome caso ja exista
 CD X
 RENAME X
 RM
   nao deletar dir atual
-  verificar se o dir esta acessivel
 
 EDIT X
 MOVE

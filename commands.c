@@ -274,7 +274,7 @@ int movBDiv(MetaData data, uint8_t currentDir, char name[30]) {
   return currentDir;
   }
 
-int gDI(MetaData data, char name[30]) {
+int gDI(MetaData data, char name[30]) { // get dir Index
   // Recebe o nome de um diretorio e retorna seu indice na tabela
   int clusterSize = data.clusterSize* 1000;
   int position = data.clusterBegin + clusterSize;
@@ -317,20 +317,18 @@ void renameD(MetaData data, uint8_t currentDir, char name[30]){
   fclose(lightfs);
 }
 
-void movebarra (MetaData data, char name[30])
-{
-		printf("NAME EDIT = %s\n",name);
-    char *nameOrigem, *nameDestino, *rest;
+void movebarra (MetaData data, char *primeiro, char *segundo) {
+    //char *nameOrigem, *nameDestino, *rest;
     int clusterSize = data.clusterSize* 1000;
     int position = 0;
     uint8_t indexOrigem, indexDestino;
     char *atual;
 
-    nameOrigem = strtok_r(name," ",&nameDestino);
-    nameDestino = strtok(nameDestino,"\n");
+    //nameOrigem = strtok_r(name," ",&nameDestino);
+    //nameDestino = strtok(nameDestino,"\n");
 
-    indexOrigem = getDirIndex(data, nameOrigem);
-    indexDestino = getDirIndex(data, nameDestino);
+    indexOrigem = getDirIndex(data, primeiro);
+    indexDestino = getDirIndex(data, segundo);
 
     position = data.indexBegin + indexOrigem;
     FILE* lightfs = fopen("lightfs.bin", "r+b");
@@ -338,6 +336,8 @@ void movebarra (MetaData data, char name[30])
     fwrite(&indexDestino,sizeof(indexDestino),1,lightfs);
     fclose(lightfs);
 }
+
+
 
 void edit(MetaData data, char* name)
 {

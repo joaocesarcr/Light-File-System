@@ -1,18 +1,17 @@
 DIR X
-	printar arquivo sem /
 MKFILE X
-MKDIR X
-  mudar o nome caso ja exista
 CD X
 RENAME X
-RM
-  nao deletar dir atual
-
 EDIT X
+
+RM
+	ver se ta vazio
+MKDIR X
+  mudar o nome caso ja exista
 MOVE
+	testar move
 
 // TODO Passar metadata para variavel global
 // TODO Tratamento de entradas
 // TODO Nao permitir a criacao de diretorios com mesmo nome
 // TODO Ter alguma flag para ser lida como EOF, para falitar o RM
-

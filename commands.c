@@ -121,11 +121,13 @@ void printDirName(MetaData data, int indexPosition, int cFlag) {
     fread(&num, 1, 1, lightfs);
     fgets(nome, 30, lightfs);
   fclose(lightfs);
-  if (cFlag == 1) {
-    printf(ANSI_COLOR_GREEN); 
-    printf("/%s",nome);
-  } else printf("/%s",nome);
-  printf(ANSI_COLOR_RESET); 
+	if (num) {
+		if (cFlag == 1) {
+			printf(ANSI_COLOR_GREEN); 
+			printf("/%s",nome);
+		} else printf("/%s",nome);
+		printf(ANSI_COLOR_RESET); 
+	} else printf("%s",nome);
 }
 
 void mkdir(MetaData data, uint8_t currentDir, char name[30]) {
@@ -134,6 +136,14 @@ void mkdir(MetaData data, uint8_t currentDir, char name[30]) {
   // Acha espaço livre
   uint8_t freePosition = findFreeSpace(data);
   int position = freePosition + data.indexBegin;
+
+	int flag = 1; 
+	while (flag) {
+		if ((getDirIndex(data,name)) != -1);
+  uint8_t freePosition = findFreeSpace(data);
+	}
+	
+		  
   
   name = strtok(name,"\n"); // Separa o input a partir do " "
 //  printf("Diretorio criado na posicao %d\n",freePosition);
@@ -211,9 +221,16 @@ int cdAux(MetaData data, uint8_t currentDir, char name[30]) {
   }
 
 
-void remover(MetaData data, uint8_t currentDir, char name[30]) {
-  name = strtok(name,"\n"); // Separa o input a partir do " "
+void remover(MetaData data, uint8_t currentDir, char name[30]){
+  name = strtok(name,"\n");
   int pos = getDirIndex(data, name);
+  if(pos == currentDir){
+		printf(ANSI_COLOR_RED); //Set the text to the color red
+    printf("Can't delete current directory\n");
+		printf(ANSI_COLOR_RESET); 
+
+    return;
+  }
   int position = pos + data.indexBegin; 
   uint8_t  final = 255; 
   FILE* lightfs = fopen("lightfs.bin", "r+b");

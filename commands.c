@@ -138,29 +138,24 @@ void mkdir(MetaData data, uint8_t currentDir, char name[30]) {
   int position = freePosition + data.indexBegin;
 
 	int flag = 1; 
-	while (flag) {
-		if ((getDirIndex(data,name)) != -1);
-  uint8_t freePosition = findFreeSpace(data);
-	}
-	
-		  
-  
-  name = strtok(name,"\n"); // Separa o input a partir do " "
-//  printf("Diretorio criado na posicao %d\n",freePosition);
-  FILE* lightfs = fopen("lightfs.bin", "r+b");
-    fseek(lightfs,position,SEEK_SET);
-    fwrite(&currentDir, sizeof(currentDir),1, lightfs);
+	if ((gDI(data,name)) != -1) { 
+		name = strtok(name,"\n"); // Separa o input a partir do " "
+	//  printf("Diretorio criado na posicao %d\n",freePosition);
+		FILE* lightfs = fopen("lightfs.bin", "r+b");
+			fseek(lightfs,position,SEEK_SET);
+			fwrite(&currentDir, sizeof(currentDir),1, lightfs);
 
-  // Escrever no cluster flag e seu nome
-    uint8_t flag = 1;
-    int clusterSize = data.clusterSize* 1000;
-    position = data.clusterBegin  + (clusterSize * freePosition);
-    fseek(lightfs,position,SEEK_SET);
-    fwrite(&flag, sizeof(flag),1, lightfs);
-    fwrite(name, 240,1, lightfs);
+		// Escrever no cluster flag e seu nome
+			uint8_t flag = 1;
+			int clusterSize = data.clusterSize* 1000;
+			position = data.clusterBegin  + (clusterSize * freePosition);
+			fseek(lightfs,position,SEEK_SET);
+			fwrite(&flag, sizeof(flag),1, lightfs);
+			fwrite(name, 240,1, lightfs);
 
-    fclose(lightfs);
-//  printf("Cluster Metadata escrita em posicao = %d\n", position);
+			fclose(lightfs);
+	//  printf("Cluster Metadata escrita em posicao = %d\n", position);
+		} else printf ("Este nome ja foi utilizado\n");
   }
 
 void dir(MetaData data, uint8_t currentDir) {

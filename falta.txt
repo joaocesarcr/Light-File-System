@@ -3,11 +3,10 @@ MKFILE X
 CD X
 RENAME X
 EDIT X
+MKDIR X
 
 RM
 	ver se ta vazio
-MKDIR X
-  mudar o nome caso ja exista
 MOVE
 	testar move
 

@@ -64,6 +64,7 @@ int getDirIndex(MetaData data, char name[30]) {
   fclose(lightfs);
   printf(ANSI_COLOR_RED); 
   printf("%s not found\n",name);
+//	printf("\U0001F602\n");
   printf(ANSI_COLOR_RESET); 
   return -1;
   }
@@ -409,6 +410,7 @@ int movebarra (MetaData data, char *primeiro, char *segundo) {
 			fseek(lightfs,position,SEEK_SET);
 			fwrite(&indexDestino,sizeof(indexDestino),1,lightfs);
     fclose(lightfs);
+	return 0;
 }
 
 void edit(MetaData data, char* name)
@@ -416,11 +418,11 @@ void edit(MetaData data, char* name)
   char *parte = strtok_r(name, " ", &name);
   int pos = getDirIndex(data, parte);  
   int position = data.clusterBegin + (pos*data.clusterSize*1000);
-  uint8_t eof = 255;
+
+	strcat(name,"/0");
   FILE* lightfs = fopen("lightfs.bin", "r+b");
   fseek(lightfs, position+241,SEEK_SET);
-  fwrite(name, sizeof(name) * 10, 1, lightfs);
-  fwrite(&eof, sizeof(eof), 1, lightfs);
+  fwrite(name, sizeof(name) * 100, 1, lightfs);
   fclose(lightfs);
 }
 

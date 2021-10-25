@@ -52,7 +52,6 @@ int main() {
   // 32 000 - (8 + 240 + 32 + 32)
   // 32.000bytes - 312bits
 
-  num = 0;
 //  for(int i = 0; i < 8160000;i++)
   for(int i = 0; i < 816000;i++)
     fwrite(&num, sizeof(num),1, out);

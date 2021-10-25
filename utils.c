@@ -6,20 +6,56 @@
 #include <string.h>
 #include <stdint.h>
 
+void abobora();
 void asciiArt() {
   printf(ANSI_COLOR_GREEN); 
-  printf("                                            ");
+  printf("                                       ");
   printf("  _     ___ ____ _   _ _____   _____ ____  \n");
-  printf("                                            ");
+  printf("                                       ");
   printf(" | |   |_ _/ ___| | | |_   _| |  ___/ ___| \n");
-  printf("                                            ");
+  printf("                                       ");
   printf(" | |    | | |  _| |_| | | |   | |_  \\____\\ \n");
-  printf("                                            ");
+  printf("                                       ");
   printf(" | |___ | | |_| |  _  | | |   |  _|  __) |\n");
-  printf("                                            ");
+  printf("                                       ");
   printf(" |_____|___\\____|_| |_| |_|   |_|   |____/\n");
+	abobora();
   printf(ANSI_COLOR_RESET); 
   }
+
+void abobora() {
+  printf(ANSI_COLOR_GREEN); 
+  printf("                                       ");
+  printf("          ");
+printf("          ___\n");
+  printf("          ");
+  printf("                                       ");
+printf("       ___)__|_\n");
+  printf("          ");
+  printf("                                       ");
+  printf(ANSI_COLOR_RED); 
+printf("  .-*'          '*-,\n");
+  printf("          ");
+  printf("                                       ");
+printf(" /      /|   |\\     \\\n");
+  printf("          ");
+  printf("                                       ");
+printf(";      /_|   |_\\     ;\n");
+  printf("          ");
+  printf("                                       ");
+printf(";   |\\           /|  ;\n");
+  printf("          ");
+  printf("                                       ");
+printf(";   | ''--...--'' |  ;\n");
+  printf("          ");
+  printf("                                       ");
+printf(" \\  ''---.....--''  /\n");
+  printf("          ");
+  printf("                                       ");
+printf("  ''*-.,_______,.-*'    \n");
+	
+  printf(ANSI_COLOR_RESET); 
+}
 
 int getCommand(char* str) {
   // Recebe o comando em str e retorna int para o swtich/case
@@ -45,6 +81,6 @@ void clearScreen(int a) {
 void begin() {
   clearScreen(10);
   asciiArt();
-  clearScreen(25);
+  clearScreen(10);
   }
 

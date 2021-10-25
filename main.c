@@ -11,7 +11,7 @@
 int main() {
   begin(); // Clear screen & ascii logo
   int stop = 0;
-  char input[80];
+  char input[800];
 
   // Get filesystem metadata
   MetaData data = getMetaData(&data);
@@ -25,6 +25,7 @@ int main() {
 	char* tokenAtual;
   // Main loop
   do {
+//		printf("\U0001F602");
     printDirPath(data,currentDir);
     printf(" $ ");
     fgets(input,80, stdin);

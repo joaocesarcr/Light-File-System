@@ -372,7 +372,7 @@ void renameD(MetaData data, uint8_t currentDir, char name[30]){
 	} 
 }
 
-void movebarra (MetaData data, char *primeiro, char *segundo) {
+int movebarra (MetaData data, char *primeiro, char *segundo) {
     //char *nameOrigem, *nameDestino, *rest;
     int clusterSize = data.clusterSize* 1000;
     int position = 0;
@@ -382,13 +382,32 @@ void movebarra (MetaData data, char *primeiro, char *segundo) {
     //nameOrigem = strtok_r(name," ",&nameDestino);
     //nameDestino = strtok(nameDestino,"\n");
 
-    indexOrigem = getDirIndex(data, primeiro);
-    indexDestino = getDirIndex(data, segundo);
+		if (!(strcmp(primeiro,"root")))// move root algumacoisa
+    {
+        printf("Nao pode mover a root\n");
+        return -1;
+    }
+    else
+    {
+        indexOrigem = getDirIndex(data, primeiro);
+    }
+
+    if (!strcmp(segundo,"root"))
+    {
+        indexDestino = 0;
+    }
+    else
+    {
+        indexDestino = getDirIndex(data, segundo);
+    }
+
+//    indexOrigem = getDirIndex(data, primeiro);
+//    indexDestino = getDirIndex(data, segundo);
 
     position = data.indexBegin + indexOrigem;
     FILE* lightfs = fopen("lightfs.bin", "r+b");
-    fseek(lightfs,position,SEEK_SET);
-    fwrite(&indexDestino,sizeof(indexDestino),1,lightfs);
+			fseek(lightfs,position,SEEK_SET);
+			fwrite(&indexDestino,sizeof(indexDestino),1,lightfs);
     fclose(lightfs);
 }
 

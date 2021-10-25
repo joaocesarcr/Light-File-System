@@ -382,7 +382,7 @@ void edit(MetaData data, char* name)
   uint8_t eof = 255;
   FILE* lightfs = fopen("lightfs.bin", "r+b");
   fseek(lightfs, position+241,SEEK_SET);
-  fwrite(name, sizeof(name), 1, lightfs);
+  fwrite(name, sizeof(name) * 10, 1, lightfs);
   fwrite(&eof, sizeof(eof), 1, lightfs);
   fclose(lightfs);
 }

@@ -48,6 +48,7 @@ int getDirIndex(MetaData data, char name[30]) {
   FILE* lightfs = fopen("lightfs.bin", "r+b");
 
 //  printf("Index name procurado = %s\n",name); 
+		
   do {
     index++;
     position = data.clusterBegin  + (clusterSize * index);
@@ -55,7 +56,7 @@ int getDirIndex(MetaData data, char name[30]) {
     fread(&num, 1, 1, lightfs);
     fgets(indexName, 30, lightfs);
 //    if (*indexName) printf("Index name = %s\n",indexName); 
-    if ((!strcmp(indexName,name)) && (num != 255)) {
+    if (!strcmp(indexName,name)) {
       fclose(lightfs);
       return index;
     }
@@ -138,7 +139,13 @@ void mkdir(MetaData data, uint8_t currentDir, char name[30]) {
   int position = freePosition + data.indexBegin;
 	name = strtok(name,"\n"); // Separa o input a partir do " "
 
-	if ((gDI(data,name)) == -1) { 
+	uint8_t empty = 255;
+
+	int index = gDI(data,name);
+	if ((index != -1) && (returnFatValue(data,index)!= 255)){
+		// Se ja existiu E nao foi apagado NAO USA O NOME
+		 printf ("MKDIR Este nome ja foi utilizado\n"); 
+	}	else { 
 	//  printf("Diretorio criado na posicao %d\n",freePosition);
 		FILE* lightfs = fopen("lightfs.bin", "r+b");
 			fseek(lightfs,position,SEEK_SET);
@@ -154,7 +161,7 @@ void mkdir(MetaData data, uint8_t currentDir, char name[30]) {
 
 			fclose(lightfs);
 	//  printf("Cluster Metadata escrita em posicao = %d\n", position);
-		} else printf ("Este nome ja foi utilizado\n");
+		}
   }
 
 void dir(MetaData data, uint8_t currentDir) {
@@ -187,6 +194,8 @@ int cdAux(MetaData data, uint8_t currentDir, char name[30]) {
 
   name = strtok(name,"\n"); // Separa o input a partir do " "
   int index = getDirIndex(data,name);
+  if (index == -1) return currentDir;
+
 	// Verifica se é arquivo ou dir
 	int clusterSize = data.clusterSize * 1000;
 	int position = data.clusterBegin  + (clusterSize * index);
@@ -195,13 +204,10 @@ int cdAux(MetaData data, uint8_t currentDir, char name[30]) {
 		fread(&num, 8, 1, lightfs);
 	if (!num) {
 		printf(ANSI_COLOR_RED); 
-		printf("Error\n");
+		printf("Can't CD into file\n");
 		printf(ANSI_COLOR_RESET); 
 		return currentDir;	
 	}
-
-  // Acha a posicao do diretorio desejado
-  if (index == -1) return currentDir;
 
   // Verifica se o diretorio desejado tem como pai o diretorio atual
     fseek(lightfs,index + data.indexBegin,SEEK_SET);
@@ -209,8 +215,9 @@ int cdAux(MetaData data, uint8_t currentDir, char name[30]) {
     if (num == currentDir) {
       return index;
     }  
+
   fclose(lightfs);
-  printf("ERROR\n");
+  printf("Error\n");
   return currentDir;
   }
 
@@ -263,19 +270,27 @@ void mkfile(MetaData data, uint8_t currentDir, char name[30]) {
   uint8_t freePosition = findFreeSpace(data);
   int position = freePosition + data.indexBegin;
   name = strtok(name,"\n");
-  //Escreve na fat quem e o pai
-  FILE* lightfs = fopen("lightfs.bin", "r+b");
-    fseek(lightfs,position,SEEK_SET);
-    fwrite(&currentDir, sizeof(currentDir),1, lightfs);
 
-    // Escrever no cluster flag e seu nome
-    uint8_t flag = 0;
-    int clusterSize = data.clusterSize* 1000;
-    position = data.clusterBegin  + (clusterSize * freePosition);
-    fseek(lightfs,position,SEEK_SET);
-    fwrite(&flag, sizeof(flag),1, lightfs);
-    fwrite(name, 30*8,1, lightfs);
-    fclose(lightfs);
+	int index = gDI(data,name);
+ 	if ((index != -1) && (returnFatValue(data,index)!= 255)){
+		// Se ja existiu E nao foi apagado NAO USA O NOME
+		 printf ("Este nome ja foi utilizado\n"); 
+	}	else { 
+
+		//Escreve na fat quem e o pai
+		FILE* lightfs = fopen("lightfs.bin", "r+b");
+			fseek(lightfs,position,SEEK_SET);
+			fwrite(&currentDir, sizeof(currentDir),1, lightfs);
+
+			// Escrever no cluster flag e seu nome
+			uint8_t flag = 0;
+			int clusterSize = data.clusterSize* 1000;
+			position = data.clusterBegin  + (clusterSize * freePosition);
+			fseek(lightfs,position,SEEK_SET);
+			fwrite(&flag, sizeof(flag),1, lightfs);
+			fwrite(name, 30*8,1, lightfs);
+			fclose(lightfs);
+	} 
 }
 
 int movBDiv(MetaData data, uint8_t currentDir, char name[30]) {
@@ -310,7 +325,7 @@ int movBDiv(MetaData data, uint8_t currentDir, char name[30]) {
   }
 
 int gDI(MetaData data, char name[30]) { // get dir Index
-  // Recebe o nome de um diretorio e retorna seu indice na tabela
+  // Recebe um nome e retorna seu indice na tabela
   int clusterSize = data.clusterSize* 1000;
   int position = data.clusterBegin + clusterSize;
   int num;
@@ -318,14 +333,14 @@ int gDI(MetaData data, char name[30]) { // get dir Index
   char indexName[30];
   FILE* lightfs = fopen("lightfs.bin", "r+b");
 //  printf("Index name procurado = %s\n",name); 
+	// Olha de cluster em cluster se o nome é igual
   do {
     index++;
     position = data.clusterBegin  + (clusterSize * index);
     fseek(lightfs,position,SEEK_SET);
     fread(&num, 1, 1, lightfs);
     fgets(indexName, 30, lightfs);
-//    if (*indexName) printf("Index name = %s\n",indexName); 
-    if ((!strcmp(indexName,name)) && (num != 255)) {
+    if (!strcmp(indexName,name)) {
       fclose(lightfs);
       return index;
     }
@@ -343,13 +358,18 @@ void renameD(MetaData data, uint8_t currentDir, char name[30]){
 //	printf("token = %s\n",token);
 	int position = getDirIndex(data,token);
 	
-	printf("position = %d\n",position);
-	position = data.clusterBegin  + (clusterSize * position);
+	int index = gDI(data,name);
+	if ((index != -1) && (returnFatValue(data,index)!= 255)){
+		// Se ja existiu E nao foi apagado NAO USA O NOME
+		 printf ("Este nome ja foi utilizado\n"); 
+	}	else { 
 
-  FILE* lightfs = fopen("lightfs.bin", "r+b");
-    fseek(lightfs,position+1,SEEK_SET);
-    fwrite(name, 240,1, lightfs);
-  fclose(lightfs);
+		position = data.clusterBegin  + (clusterSize * position);
+		FILE* lightfs = fopen("lightfs.bin", "r+b");
+			fseek(lightfs,position+1,SEEK_SET);
+			fwrite(name, 240,1, lightfs);
+		fclose(lightfs);
+	} 
 }
 
 void movebarra (MetaData data, char *primeiro, char *segundo) {
@@ -372,8 +392,6 @@ void movebarra (MetaData data, char *primeiro, char *segundo) {
     fclose(lightfs);
 }
 
-
-
 void edit(MetaData data, char* name)
 {
   char *parte = strtok_r(name, " ", &name);
@@ -386,3 +404,15 @@ void edit(MetaData data, char* name)
   fwrite(&eof, sizeof(eof), 1, lightfs);
   fclose(lightfs);
 }
+
+int returnFatValue(MetaData data, int index) {
+	// Pega indice fat e retorna se é 255
+ int position, valorIndex;
+ position = data.indexBegin + index;
+ FILE* lightfs = fopen("lightfs.bin", "r+b");
+	 fseek(lightfs,position,SEEK_SET);
+	 fread(&valorIndex, 1, 1, lightfs);
+ fclose(lightfs);
+ return valorIndex;
+}
+

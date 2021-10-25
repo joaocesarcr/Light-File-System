@@ -81,11 +81,12 @@ int main() {
 			case 15:
       case 7:
 				strtok_r(rest," ",&segundo);
-        printf("token: %s\n",token); //token é o segundo
-        printf("rest: %s\n",rest); //rest é o primeiro
+//        printf("token: %s\n",token); //token é o segundo
+
+ //       printf("rest: %s\n",rest); //rest é o primeiro
 
 //        strcpy(segundo,token);
-        printf("segundo: %s",segundo);
+  //      printf("segundo: %s",segundo);
 
         while ((token = strtok_r(rest, "/",&rest)))
         {

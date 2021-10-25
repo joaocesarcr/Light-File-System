@@ -26,3 +26,4 @@ int movBDiv(MetaData data, uint8_t currentDir, char name[30]);
 void movebarra (MetaData data, char *primeiro, char *segundo);
 void edit(MetaData data, char* name);
 int searchSon(MetaData data, uint8_t father);
+int returnFatValue(MetaData data, int index);

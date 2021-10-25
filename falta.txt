@@ -1,14 +1,14 @@
 MKDIR X
 DIR X
 CD X
-MKFILE -> bloquear criacao com dois nome
+MKDIR X
+MKFILE X
 RM X
-EDIT
+RENAME X
+EDIT X
 MOVE
-RENAME
 
 
-MKDIR -> verificar a tabela
 
 DIR X
 MKFILE X

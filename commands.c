@@ -215,12 +215,38 @@ int cdAux(MetaData data, uint8_t currentDir, char name[30]) {
   }
 
 
+int searchSon(MetaData data, uint8_t father){
+  FILE* lightfs = fopen("lightfs.bin","rb");
+  int pos;
+  uint8_t num = 0;
+  for(int i = 1; i < 255; i++){
+    pos = data.indexBegin + i;
+    fseek(lightfs,pos,SEEK_SET);
+    fread(&num,1,1,lightfs);
+    if(num == father){
+      return -1;
+    }
+  }
+  return 1;
+}
+
 void remover(MetaData data, uint8_t currentDir, char name[30]){
   name = strtok(name,"\n");
   int pos = getDirIndex(data, name);
+  if(pos == -1){
+    return;
+  }
   if(pos == currentDir){
-		printf(ANSI_COLOR_RED); //Set the text to the color red
+		printf(ANSI_COLOR_RED); 
     printf("Can't delete current directory\n");
+		printf(ANSI_COLOR_RESET); 
+
+    return;
+  }
+  int check = searchSon(data, pos);
+  if(check == -1){
+		printf(ANSI_COLOR_RED); 
+    printf("Can't delete a directory that is not empty\n");
 		printf(ANSI_COLOR_RESET); 
 
     return;
@@ -232,7 +258,6 @@ void remover(MetaData data, uint8_t currentDir, char name[30]){
     fwrite(&final, sizeof(currentDir),1, lightfs);
   fclose(lightfs);
 }
-
 
 void mkfile(MetaData data, uint8_t currentDir, char name[30]) {
   uint8_t freePosition = findFreeSpace(data);

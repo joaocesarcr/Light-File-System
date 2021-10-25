@@ -78,29 +78,27 @@ int main() {
 				edit(data,tokenAtual);
         break;
 
+			case 15:
       case 7:
 				strtok_r(rest," ",&segundo);
-        printf("token: %s\n",segundo); //token é o segundo
+        printf("token: %s\n",token); //token é o segundo
         printf("rest: %s\n",rest); //rest é o primeiro
 
+//        strcpy(segundo,token);
         printf("segundo: %s",segundo);
 
-				tokenAtual = rest;
         while ((token = strtok_r(rest, "/",&rest)))
         {
           currentDir = movBDiv(data, currentDir, token);
-          tokenAtual = rest;
+          tokenAtual = token;
         }
 
-        printf("tokenAtual: %s\n",tokenAtual); //token é o segundo
-        
-				tokenAtual2 = segundo;
+        currentDir = cDir;
         while ((token = strtok_r(segundo, "/",&segundo)))
         {
           currentDir = movBDiv(data, currentDir, token);
-          tokenAtual2 = segundo;
+          tokenAtual2 = token;
         }
-        printf("tokenAtual2: %s\n",tokenAtual2); //token é o segundo
 
         movebarra(data,tokenAtual,tokenAtual2);
 

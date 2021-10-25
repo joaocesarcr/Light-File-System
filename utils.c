@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdint.h>
 
+void art();
 void asciiArt() {
   printf(ANSI_COLOR_GREEN); 
   printf("                                            ");
@@ -19,11 +20,46 @@ void asciiArt() {
   printf("                                            ");
   printf(" |_____|___\\____|_| |_| |_|   |_|   |____/\n");
   printf(ANSI_COLOR_RESET); 
+	art();
   }
+
+void art() {
+
+printf("                                            ");
+printf("          ___\n");
+  printf("                                            ");
+printf("       ___)__|_\n");
+  printf("                                            ");
+printf("  .-*'          '*-,\n");
+  printf("                                            ");
+printf(" /      /|   |\\     \\n");
+  printf("                                            ");
+printf(";      /_|   |_\\     ;\n");
+printf(";   |\\           /|  ;\n");
+printf(";   | ''--...--'' |  ;\n");
+printf(" \\  ''---.....--''  /\n");
+printf("  ''*-.,_______,.-*'   \n");
+}
+void maisArt() {
+printf("⊂_ヽ\n");
+printf("　 ＼＼\n");
+printf("　　 ＼( ͡° ͜ʖ ͡°)\n");
+printf("　　　 >　⌒ヽ\n");
+printf("　　　/ 　 へ＼\n");
+printf("　　 /　　/　＼＼\n");
+printf("　　 ﾚ　ノ　　 ヽ_つ\n");
+printf("　　/　/\n");
+printf("　 /　/|\n");
+printf("　(　(ヽ\n");
+printf("　|　|、＼\n");
+printf("　| 丿 ＼ ⌒)\n");
+printf("　| |　　) /\n");
+printf("ノ )　　Lﾉ\n");
+printf("(_／\n");
+}
 int getCommand(char* str) {
   // Recebe o comando em str e retorna int para o swtich/case
-  if (!strcmp(str, "cd")) return 1;
-  if (!strcmp(str, "cd\n")) return 12;
+  if (!strcmp(str, "cd")) return 1; if (!strcmp(str, "cd\n")) return 12;
   if (!strcmp(str, "dir\n")) return 2;
   if (!strcmp(str, "rm")) return 3;
   if (!strcmp(str, "mkdir")) return 4;
@@ -35,6 +71,7 @@ int getCommand(char* str) {
   if (!strcmp(str, "clear\n")) return 9;
   if (!strcmp(str, "exit\n")) return 10;
   if (!strcmp(str, "\n")) return 11;
+  if (!strcmp(str, "move")) return 15;
   return 0;
   }
 void clearScreen(int a) {

@@ -4,9 +4,8 @@ CD X
 RENAME X
 EDIT X
 MKDIR X
-RM*
-MOVE
-	testar move
+RM X
+MOVE X
 
 
 // TODO Passar metadata para variavel global

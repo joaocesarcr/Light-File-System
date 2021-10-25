@@ -79,24 +79,28 @@ int main() {
         break;
 
       case 7:
-				strtok_r(rest," ",&token);
-        printf("token: %s\n",token); //token é o segundo
+				strtok_r(rest," ",&segundo);
+        printf("token: %s\n",segundo); //token é o segundo
         printf("rest: %s\n",rest); //rest é o primeiro
 
-        strcpy(segundo,token);
         printf("segundo: %s",segundo);
 
+				tokenAtual = rest;
         while ((token = strtok_r(rest, "/",&rest)))
         {
           currentDir = movBDiv(data, currentDir, token);
-          tokenAtual = token;
+          tokenAtual = rest;
         }
+
+        printf("tokenAtual: %s\n",tokenAtual); //token é o segundo
         
+				tokenAtual2 = segundo;
         while ((token = strtok_r(segundo, "/",&segundo)))
         {
           currentDir = movBDiv(data, currentDir, token);
-          tokenAtual2 = token;
+          tokenAtual2 = segundo;
         }
+        printf("tokenAtual2: %s\n",tokenAtual2); //token é o segundo
 
         movebarra(data,tokenAtual,tokenAtual2);
 
@@ -136,7 +140,6 @@ int main() {
         printf("unknown command ");
         printf(ANSI_COLOR_RESET); 
         printf("%s", input);
-
         break;
     }
   }  while (!stop);

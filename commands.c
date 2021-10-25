@@ -136,10 +136,9 @@ void mkdir(MetaData data, uint8_t currentDir, char name[30]) {
   // Acha espaço livre
   uint8_t freePosition = findFreeSpace(data);
   int position = freePosition + data.indexBegin;
+	name = strtok(name,"\n"); // Separa o input a partir do " "
 
-	int flag = 1; 
-	if ((gDI(data,name)) != -1) { 
-		name = strtok(name,"\n"); // Separa o input a partir do " "
+	if ((gDI(data,name)) == -1) { 
 	//  printf("Diretorio criado na posicao %d\n",freePosition);
 		FILE* lightfs = fopen("lightfs.bin", "r+b");
 			fseek(lightfs,position,SEEK_SET);
@@ -282,7 +281,6 @@ int movBDiv(MetaData data, uint8_t currentDir, char name[30]) {
       return index;
     }  
   fclose(lightfs);
-  printf("ERROR\n");
   return currentDir;
   }
 
@@ -316,8 +314,8 @@ void renameD(MetaData data, uint8_t currentDir, char name[30]){
 	int clusterSize = data.clusterSize * 1000;
 	//token = a.txt
 	// name = b.txt
-	printf("name = %s\n",name);
-	printf("token = %s\n",token);
+//	printf("name = %s\n",name);
+//	printf("token = %s\n",token);
 	int position = getDirIndex(data,token);
 	
 	printf("position = %d\n",position);

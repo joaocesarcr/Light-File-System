@@ -4,13 +4,30 @@ CD X
 RENAME X
 EDIT X
 MKDIR X
-
-RM
-	ver se ta vazio
+RM*
 MOVE
 	testar move
+
 
 // TODO Passar metadata para variavel global
 // TODO Tratamento de entradas
 // TODO Nao permitir a criacao de diretorios com mesmo nome
 // TODO Ter alguma flag para ser lida como EOF, para falitar o RM
+
+
+cd a/b/c/d/e/f
+
+a/b/c/d/e/f ->  a b/c/d/e/f
+
+b/c/d/e/f -> b c/d/e/f
+
+c/d/e/f -> c d/e/f
+
+d/e/f ->  d e/f
+
+e/f -> e f
+
+e f
+
+
+

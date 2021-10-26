@@ -427,7 +427,7 @@ void edit(MetaData data, char* name)
 }
 
 int returnFatValue(MetaData data, int index) {
-	// Pega indice fat e retorna se é 255
+	// Pega indice fat e retorna o valor
  int position, valorIndex;
  position = data.indexBegin + index;
  FILE* lightfs = fopen("lightfs.bin", "r+b");
